@@ -27,7 +27,7 @@ for i in img:
 """
 ########################
 
-f = open('lot courbes de forces/4.txt', 'r')
+f = open('lot courbes de forces/1.txt', 'r')
 #content = f.readlines()
 x = []
 y = []
@@ -40,12 +40,34 @@ f.close()
 x = np.array(x)
 y = np.array(y)
 ptsArray = np.array([x,y])
-print(ptsArray[0][0], " ", ptsArray[0][1])
+#print(ptsArray[0][0], " ", ptsArray[1][0])
 
 plt.figure(figsize=(19.2,10.8))
-plt.xlabel("??")
-plt.ylabel("??")
+plt.ylabel("F (nN)")
+plt.xlabel("Z (piezo)")
 plt.title("Force Curve")
 plt.grid()
 plt.plot(ptsArray[0], ptsArray[1], "blue")
 plt.show()
+
+##### correction piezo #####
+
+tmp = 0
+a = 0
+r = 400
+for i in range(r):
+    tmp += ptsArray[1][i]
+a = tmp/r
+for i in range(ptsArray.shape[1]):
+    ptsArray[1][i] -= a
+
+plt.figure(figsize=(19.2,10.8))
+plt.ylabel("F (nN)")
+plt.xlabel("d (nm)")
+plt.title("Force Curve")
+plt.grid()
+plt.plot(ptsArray[0], ptsArray[1], "blue")
+plt.show()
+
+##### calcule Force d'adhésion avec position #####
+
