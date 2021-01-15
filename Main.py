@@ -53,11 +53,11 @@ def Seuil (curveRetour, alpha, N, debut):
     return seuil
 
 
-#def IsRupture(Fr, Fi):
+def IsRupture(Fr, Fi):
 
 
 
-    #return rupturePts
+    return rupturePts
 
 
 def Derivee (x, y):
@@ -165,7 +165,26 @@ plt.show()
 
 ##### Pics de Rupture et conditions
 
-#rupturePts = IsRupture(Fr, Fi)
+Fi = np.array(curveRetourY[1])
+FrX = []
+FrY = []
+for i in range(1, varI.shape[1]-1, 1):
+    if varI[1][i] > seuil and varI[1][i-1] < varI[1][i] and varI[1][i+1] < varI[1][i]:
+        FrY.append(varI[1][i])
+        FrX.append(varI[0][i])
+Fr = np.array([FrX, FrY])
+plt.figure(figsize=(19.2, 10.8))
+plt.plot(varI[0], varI[1], color="blue", label="Var(i)")
+plt.plot(list(varI[0]), tabSeuil, color="orange", label="seuil")
+plt.scatter(Fr[0], Fr[1], color="red", label="pics")
+plt.ylabel("Var(i)")
+plt.xlabel("i")
+plt.title("----")
+plt.legend()
+plt.grid()
+plt.show()
+
+rupturePts = IsRupture(Fr, Fi)
 
 
 ##### calcul Force d'adhésion avec position #####
