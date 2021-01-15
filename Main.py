@@ -5,44 +5,18 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import math
 
-"""
-im = Image.open('Si__010.tiff')
-im.show()
-print(np.size(im))
-
-imarray = np.array(im)
-print(np.shape(imarray))
-
-with Image.open('Si__010.tiff') as img:
-    meta_dict = {TAGS[key] : img.tag[key] for key in img.tag.iterkeys()}
-"""
-###########
-
-"""
-img = mpimg.imread('Si__010.tiff')
-print(type(img)) # c'est un numpy array
-plt.imshow(img) # show image
-plt.show()
-for i in img:
-    print(i)
-"""
-
-########################
-
 ##### Fonctions utiles #####
 
-def Var (listF, debut, N):
+def Var (list, debut, N):
     var = []
     p = []
-    _somme = 0
-    print(type(listF))
-    for k in range(debut, len(listF) - N, N):
+    for k in range(debut, len(list) - N, 1):
         tmp = []
         for l in range(k, k + N, 1):
-            tmp.append(listF[l])
-        var.append(np.var(tmp))
+            tmp.append(list[l])
+        var.append(np.var(tmp, dtype=np.float64))
         p.append(k)
-    varI = np.array([np.array(var), np.array(p)])
+    varI = np.array([np.array(p), np.array(var)])
 
     """
     while isRun:
@@ -63,7 +37,40 @@ def Var (listF, debut, N):
     return varI
 
 
+def Seuil (curveRetour, alpha, N, debut):
+    L = curveRetour.shape[1]
+    tmp = 0
+    for i in range(L-N-50, L-N, 1):
+        #tmp += Var(list(curveRetour[0]), 0, N)[0][i]
+        tmp += Var(list(curveRetour[1]), 0, N)[1][i]
+    aveVar = tmp/50
+    diffVar = 0
+    for j in range(L-N-50, L-N, 1):
+        #diffVar += math.pow(Var(curveRetour[0], 0, N)[0][j] - aveVar, 2)
+        diffVar += math.pow(Var(curveRetour[1], 0, N)[1][j] - aveVar, 2)
+    seuil = aveVar + alpha*math.sqrt(diffVar/50)
 
+    return seuil
+
+
+#def IsRupture(Fr, Fi):
+
+
+
+    #return rupturePts
+
+
+def Derivee (x, y):
+
+    yp = (y[1:] - y[:-1]) / (x[1:] - x[:-1])
+
+    plt.plot(x, y, label="f(x)")
+    plt.plot(x[:-1], yp, label="f'(x)")
+
+    plt.legend()
+    plt.show()
+
+    return yp
 ########################
 
 f = open('lot courbes de forces/1.txt', 'r')
@@ -82,12 +89,12 @@ ptsArray = np.array([x, y])
 # print(ptsArray[0][0], " ", ptsArray[1][0])
 
 plt.figure(figsize=(19.2, 10.8))
+plt.subplot(1, 2, 1)
+plt.plot(ptsArray[0], ptsArray[1], "blue")
 plt.ylabel("F (nN)")
 plt.xlabel("Z (piezo)")
-plt.title("Force Curve")
+plt.title("Initial Force Curve")
 plt.grid()
-plt.plot(ptsArray[0], ptsArray[1], "blue")
-plt.show()
 
 ##### correction piezo #####
 
@@ -100,34 +107,65 @@ a = tmp / r
 for i in range(ptsArray.shape[1]):
     ptsArray[1][i] -= a
 
-plt.figure(figsize=(19.2, 10.8))
+plt.subplot(1, 2, 2)
+plt.plot(ptsArray[0], ptsArray[1], "blue")
 plt.ylabel("F (nN)")
 plt.xlabel("d (nm)")
-plt.title("Force Curve")
+plt.title("Force Curve corrected piezo")
 plt.grid()
-plt.plot(ptsArray[0], ptsArray[1], "blue")
 plt.show()
 
 ##### calcul variance et seuil pour trouver points de rupture #####
 
-N = 10
-listPtsY = list(ptsArray[1])
 maxY = max(ptsArray[1])
 debut = 0
 for i in range(ptsArray.shape[1]):
     if ptsArray[1][i] == maxY:
         debut = i
-varI = Var(listPtsY, debut, N)
+
+curveRetourX = []
+curveRetourY = []
+for i in range(debut, ptsArray.shape[1], 1):
+    curveRetourX.append(ptsArray[0][i])
+    curveRetourY.append(ptsArray[1][i])
+curveRetour = np.array([curveRetourX, curveRetourY])
+
+N = 10
+##### Variance
+
+varI = Var(list(curveRetour[1]), 0, N)
 
 plt.figure(figsize=(19.2, 10.8))
 plt.ylabel("Var(i)")
 plt.xlabel("i")
-plt.title("Force Curve")
+plt.title("----")
 plt.grid()
 plt.plot(varI[0], varI[1], "blue")
 plt.show()
+#yp = Derivee(curveRetour[0], curveRetour[1])
 
+##### Seuil
 
+#listPtsX = list(ptsArray[0])
+alpha = float(input("Choose the alpha treshold\n"))
+seuil = Seuil(curveRetour, alpha, N, debut)
+tabSeuil = []
+for i in range(varI.shape[1]):
+    tabSeuil.append(seuil)
+print(seuil)
+plt.figure(figsize=(19.2, 10.8))
+plt.plot(varI[0], varI[1], color="blue", label="Var(i)")
+plt.plot(list(varI[0]), tabSeuil, color="orange", label="seuil")
+plt.ylabel("Var(i)")
+plt.xlabel("i")
+plt.title("----")
+plt.legend()
+plt.grid()
+plt.show()
+
+##### Pics de Rupture et conditions
+
+#rupturePts = IsRupture(Fr, Fi)
 
 
 ##### calcul Force d'adhésion avec position #####
