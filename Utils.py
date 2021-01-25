@@ -3,19 +3,27 @@ import matplotlib.pyplot as plt
 import math
 import glob
 import os.path
+from scipy import integrate as intg
+from pylab import *
 
 ##### Fonctions utiles #####
 
 def listdirectory(path, typeOS):
 
     txt = ''
-    if typeOS == "windows":
-        path = path.replace('\'', '\\')
-        txt = '\\*.txt'
-    elif typeOS == "mac":
-        path = path.replace('/', '//')
-        txt = '//*.txt'
-    else: print("Veulliez réessayer")
+    isEnd = False
+    while not isEnd:
+        if typeOS == "windows":
+            path = path.replace('\'', '\\')
+            txt = '\\*.txt'
+            isEnd = True
+        elif typeOS == "mac":
+            path = path.replace('/', '//')
+            txt = '//*.txt'
+            isEnd = True
+        else:
+            print("Veulliez réessayer\n")
+            isEnd = False
 
     fichier=[]
     l = glob.glob(path+txt)
@@ -87,6 +95,26 @@ def Seuil (curveRetour, alpha, N):
     seuil = aveVar + alpha*math.sqrt(diffVar/50)
 
     return seuil
+
+
+def AireSousCourbe(ptsArr):
+
+    ia = 0
+    ib = 0
+    for i in range(1, ptsArr.shape[1] - 1):
+        if ptsArr[1][i + 1] < 0 < ptsArr[1][i - 1]:
+            ia = i
+            break
+    for i in range(1, ptsArr.shape[1] - 1):
+        if ptsArr[1][i + 1] > 0 > ptsArr[1][i - 1]:
+            ib = i
+            break
+    aire = 0
+    for i in range(ia, ib - 5, 5):
+        x = ptsArr[0][i + 5] - ptsArr[0][i]
+        aire += ptsArr[1][i] * x
+
+    return abs(aire)
 
 """
 def IsRupture(Fr, Fi):

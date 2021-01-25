@@ -118,8 +118,7 @@ def returnPtsRupture (correctedPtsArray):
 
 
 ##### module écriture données au format csv #####
-def writeDataInCsvFile (outputPath, dataToStore, nameOutput, increment):
-    zippedList = list(zip(dataToStore[0], dataToStore[1]))
-    dataFrame = pd.DataFrame(zippedList, columns=['Def', 'Force '])
+def writeDataInCsvFile (outputPath, data1, data2, dictData, nameOutput, increment):
+    zippedList = zip(data1, data2)
+    dataFrame = pd.DataFrame(zippedList, columns=[dictData[0:]])
     dataFrame.to_csv(os.path.join(outputPath, nameOutput[increment] + '.csv'), sep=';')
-
