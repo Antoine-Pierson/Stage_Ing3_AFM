@@ -2,10 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import pandas as pd
-import glob
 import os.path
 from pip._vendor.distlib.compat import raw_input
 import Utils as ui
+import seaborn as sns
 
 ##### Lecture du fichier txt #####
 def returnDataFromFile (fichiers, increment):
@@ -36,7 +36,7 @@ def returnDataFromFile (fichiers, increment):
 def returnCorrectedCurve (ptsArray):
 
     ##### fit points avec ligne de base
-    a, b = np.polyfit(ptsArray[0][:500], ptsArray[1][:500], 1)
+    a, b = np.polyfit(ptsArray[0][:int((ptsArray.shape[1])/16)], ptsArray[1][:int((ptsArray.shape[1])/16)], 1)
 
     newY = []
     for i in range(ptsArray.shape[1]):
@@ -71,8 +71,8 @@ def returnPtsRupture (correctedPtsArray):
     varI = ui.Var(list(curveRetour[1]), 0, N)
 
     ##### Seuil
-    # alpha = 50
-    alpha = float(input("Choose the alpha treshold\n"))
+    alpha = 20
+    #alpha = float(input("Choose the alpha treshold\n"))
     seuil = ui.Seuil(curveRetour, alpha, N)
     tabSeuil = []
     for i in range(varI.shape[1]):
@@ -118,7 +118,20 @@ def returnPtsRupture (correctedPtsArray):
 
 
 ##### module écriture données au format csv #####
-def writeDataInCsvFile (outputPath, data1, data2, dictData, nameOutput, increment):
+def writeDataInCsvFile (outputPath, data1, data2, dictData, nameOutput = "output"):
     zippedList = zip(data1, data2)
-    dataFrame = pd.DataFrame(zippedList, columns=[dictData[0:]])
-    dataFrame.to_csv(os.path.join(outputPath, nameOutput[increment] + '.csv'), sep=';')
+    dataFrame = pd.DataFrame(data=zippedList, columns=dictData)
+    dataFrame.to_csv(os.path.join(outputPath, nameOutput + '.csv'), sep=';', index=False)
+    return os.path.join(outputPath, nameOutput + '.csv')
+
+##### module de lecture des données + affichage ? #####
+def readDataInCsvFile(files):
+    df = pd.read_csv(files, sep=";")
+    print(df.head)
+    print(df.shape)
+    print(df.columns)
+    print("FMax" in list(map(lambda x: x, df)))
+    print(df.columns.tolist())
+
+    return df[["FMax", "Aire"]]
+

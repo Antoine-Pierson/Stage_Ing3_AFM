@@ -8,21 +8,21 @@ from pylab import *
 
 ##### Fonctions utiles #####
 
-def listdirectory(path, typeOS):
+def listdirectory(path, typeOS, extension):
 
     txt = ''
     isEnd = False
     while not isEnd:
-        if typeOS == "windows":
+        if typeOS == "windows" or "w":
             path = path.replace('\'', '\\')
-            txt = '\\*.txt'
+            txt = '\\*.' + extension
             isEnd = True
-        elif typeOS == "mac":
+        elif typeOS == "mac" or "m":
             path = path.replace('/', '//')
-            txt = '//*.txt'
+            txt = '//*.' + extension
             isEnd = True
         else:
-            print("Veulliez réessayer\n")
+            print("Veuillez réessayer\n")
             isEnd = False
 
     fichier=[]
@@ -31,6 +31,7 @@ def listdirectory(path, typeOS):
         if os.path.isdir(i): fichier.extend(listdirectory(i))
         else: fichier.append(i)
 
+    '''
     baseName = []
     for i in range(len(l)):
         baseName.append(os.path.basename(l[i]))
@@ -38,8 +39,8 @@ def listdirectory(path, typeOS):
     for line in baseName:
         tmp = line.split(".")
         baseName2.append(tmp[0])
-
-    return fichier, baseName2
+    '''
+    return fichier #, baseName2
 
 
 def returnCurveSepareted (ptsArray):
@@ -99,41 +100,37 @@ def Seuil (curveRetour, alpha, N):
 
 def AireSousCourbe(ptsArr):
 
+    tmp = 0
+    reversedArrY = ptsArr[1][::-1]
+    for i in range(0, 100, 1):
+        tmp += reversedArrY[i]
+    ymean = tmp/100
+    print(ymean)
     ia = 0
     ib = 0
-    for i in range(1, ptsArr.shape[1] - 1):
-        if ptsArr[1][i + 1] < 0 < ptsArr[1][i - 1]:
+    for i in range(1, ptsArr.shape[1] - 5):
+        if ptsArr[1][i + 5] < ymean < ptsArr[1][i - 5]:
             ia = i
             break
-    for i in range(1, ptsArr.shape[1] - 1):
-        if ptsArr[1][i + 1] > 0 > ptsArr[1][i - 1]:
+    for i in range(1, ptsArr.shape[1] - 5):
+        if ptsArr[1][i + 5] > ymean > ptsArr[1][i - 5]:
             ib = i
             break
     aire = 0
-    for i in range(ia, ib - 5, 5):
-        x = ptsArr[0][i + 5] - ptsArr[0][i]
+    for i in range(ia, ib - 2, 2):
+        x = ptsArr[0][i + 2] - ptsArr[0][i]
         aire += ptsArr[1][i] * x
-
+    print(aire)
+    print("oui")
     return abs(aire)
 
-"""
-def IsRupture(Fr, Fi):
-
-
-
-   return rupturePts
-"""
 
 def Derivee (x, y):
 
     yp = (y[1:] - y[:-1]) / (x[1:] - x[:-1])
 
-    plt.plot(x, y, label="f(x)")
-    plt.plot(x[:-1], yp, label="f'(x)")
-
-    plt.legend()
-    plt.show()
-
+    #plt.plot(x, y, label="f(x)")
+    #plt.plot(x[:-1], yp, label="f'(x)")
     return yp
 
 ########################
