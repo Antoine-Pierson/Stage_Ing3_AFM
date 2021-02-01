@@ -89,7 +89,7 @@ def returnPtsRupture (correctedPtsArray):
             FrX.append(varI[0][i])
     Fr = np.array([FrX, FrY])
 
-    """
+
     plt.figure(figsize=(19.2, 10.8))
     plt.plot(varI[0], varI[1], color="blue", label="Var(i)")
     plt.plot(list(varI[0]), tabSeuil, color="orange", label="seuil")
@@ -100,8 +100,7 @@ def returnPtsRupture (correctedPtsArray):
     plt.legend()
     plt.grid()
     plt.show()
-    
-    """
+
 
     ##### Cherche Force d'adhésion avec position #####
 
@@ -118,8 +117,8 @@ def returnPtsRupture (correctedPtsArray):
 
 
 ##### module écriture données au format csv #####
-def writeDataInCsvFile (outputPath, data1, data2, dictData, nameOutput = "output"):
-    zippedList = zip(data1, data2)
+def writeDataInCsvFile (outputPath, data1, data2, data3, dictData, nameOutput = "output"):
+    zippedList = zip(data1, data2, data3)
     dataFrame = pd.DataFrame(data=zippedList, columns=dictData)
     dataFrame.to_csv(os.path.join(outputPath, nameOutput + '.csv'), sep=';', index=False)
     return os.path.join(outputPath, nameOutput + '.csv')
@@ -127,11 +126,11 @@ def writeDataInCsvFile (outputPath, data1, data2, dictData, nameOutput = "output
 ##### module de lecture des données + affichage ? #####
 def readDataInCsvFile(files):
     df = pd.read_csv(files, sep=";")
-    print(df.head)
-    print(df.shape)
-    print(df.columns)
-    print("FMax" in list(map(lambda x: x, df)))
-    print(df.columns.tolist())
+    #print(df.head)
+    #print(df.shape)
+    #print(df.columns)
+    #print("FMax" in list(map(lambda x: x, df)))
+    #print(df.columns.tolist())
 
     return df[["FMax", "Aire"]]
 

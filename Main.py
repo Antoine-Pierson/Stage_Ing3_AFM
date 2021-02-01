@@ -9,7 +9,7 @@ import Utils as ui
 def moduleFrPts():
     typeOS = raw_input("Etes vous sous windows (w) ou mac (m)? (écrivez en minuscule)\n")
     path = raw_input("Entrez le chemin du dossier où se trouve les données à traiter\n")
-    fichiers = ui.listdirectory(path, typeOS, extension="txt")
+    fichiers, baseName = ui.listdirectory(path, typeOS, extension="txt")
 
     FrX = []
     FrY = []
@@ -19,7 +19,7 @@ def moduleFrPts():
 
         verticalAB, timeStamp, zHeight, force = mf.returnDataFromFile(fichiers, increment)
         ptsArray = np.array([zHeight, force])
-        '''
+
         plt.figure(figsize=(19.2, 10.8))
         plt.subplot(1, 2, 1)
         plt.plot(ptsArray[0], ptsArray[1], "blue")
@@ -27,11 +27,11 @@ def moduleFrPts():
         plt.xlabel("Z Height (nm) (piezo)")
         plt.title("Initial Force Curve")
         plt.grid()
-        '''
+
         ##### correction piezo #####
 
         correctedPtsArray = mf.returnCorrectedCurve(ptsArray)
-        '''
+
         plt.subplot(1, 2, 2)
         plt.plot(correctedPtsArray[0], correctedPtsArray[1], "blue")
         plt.ylabel("F (nN)")
@@ -39,14 +39,14 @@ def moduleFrPts():
         plt.title("Force Curve corrected piezo")
         plt.grid()
         plt.show()
-        '''
+
         ##### calcul variance et seuil pour trouver points de rupture #####
 
         posFrForceCurve = mf.returnPtsRupture(correctedPtsArray)
 
         FrX.extend(posFrForceCurve[0])
         FrY.extend(posFrForceCurve[1])
-        '''
+
         plt.figure(figsize=(19.2, 10.8))
         plt.plot(correctedPtsArray[0], correctedPtsArray[1], color="blue", label="Force Curve")
         plt.scatter(posFrForceCurve[0], posFrForceCurve[1], color="red", label="pics")
@@ -56,13 +56,21 @@ def moduleFrPts():
         plt.legend()
         plt.grid()
         plt.show()
-        '''
+
+        isOk = False
+        while not isOk:
+            choix = int(raw_input("press 1: "))
+            if choix == 1:
+                isOk = True
+            else: isOk = False
+
         increment += 1
 
     ##### module écriture données au format csv #####
-    dictData = ['Z_Height', 'Force']
-    outputCsvPath = mf.writeDataInCsvFile(path, FrX, FrY, dictData)
-
+    dictData = ['NameFiles', 'Z_Height', 'Force']
+    outputCsvPath = mf.writeDataInCsvFile(path, baseName, FrX, FrY, dictData)
+    print("Vos données sont enregistrées à l'adresse: " + outputCsvPath)
+    '''
     isEnd3 = False
     while not isEnd3:
         print("Tapez 1 si vous voulez vous affichez les stats\nTapez 0 si non\n")
@@ -75,16 +83,18 @@ def moduleFrPts():
         else:
             print("Veuillez reessayer")
             isEnd3 = False
+    '''
 
 
 def moduleFmaxAire():
     typeOS = raw_input("Etes vous sous windows (w) ou mac (m)? (écrivez en minuscule)\n")
     path = raw_input("Entrez le chemin du dossier où se trouve les données à traiter\n")
-    fichiers = ui.listdirectory(path, typeOS, extension="txt")
+    fichiers, baseName = ui.listdirectory(path, typeOS, extension="txt")
 
     FMax = []
     aire = []
     increment = 0
+    indexDelete = 0
     while increment < len(fichiers):
         ##### Lecture du fichier txt #####
 
@@ -126,16 +136,21 @@ def moduleFmaxAire():
                 break
         '''
         ##### Aire sous la courbe  + FMax #####
-        _aire = ui.AireSousCourbe(curveRetour)
+        _aire = ui.AireSousCourbe(curveRetour)[0]
         if _aire != 0:
-            aire.append(ui.AireSousCourbe(curveRetour))
-            FMax.append(min(curveRetour[1]))
+            A, ymean = ui.AireSousCourbe(curveRetour)
+            aire.append(A)
+            FMax.append(abs(min(curveRetour[1])) - abs(ymean))
+        else:
+            del baseName[increment - indexDelete]
+            indexDelete += 1
 
         increment += 1
-    print(FMax, aire)
+
     ##### module écriture données au format csv #####
-    dictData = ["FMax", "Aire"]
-    outputCsvPath = mf.writeDataInCsvFile(path, FMax, aire, dictData)
+    dictData = ["NameFiles", "FMax", "Aire"]
+    outputCsvPath = mf.writeDataInCsvFile(path, baseName, FMax, aire, dictData)
+    print("Vos données sont enregistrées à l'adresse: " + outputCsvPath)
 
     isEnd2 = False
     while not isEnd2:
@@ -154,7 +169,6 @@ def moduleFmaxAire():
 def moduleStat(outputPath):
 
     datas = mf.readDataInCsvFile(outputPath)
-    print(datas)
 
     plt.plot(datas["FMax"], datas.index)
     plt.show()

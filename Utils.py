@@ -31,7 +31,7 @@ def listdirectory(path, typeOS, extension):
         if os.path.isdir(i): fichier.extend(listdirectory(i))
         else: fichier.append(i)
 
-    '''
+
     baseName = []
     for i in range(len(l)):
         baseName.append(os.path.basename(l[i]))
@@ -39,8 +39,8 @@ def listdirectory(path, typeOS, extension):
     for line in baseName:
         tmp = line.split(".")
         baseName2.append(tmp[0])
-    '''
-    return fichier #, baseName2
+
+    return fichier, baseName2
 
 
 def returnCurveSepareted (ptsArray):
@@ -98,21 +98,23 @@ def Seuil (curveRetour, alpha, N):
     return seuil
 
 
+##### Retourne la valeur absolue de L'aire sous la courbe de retour
+##### et la valeur moyenne en y de la ligne de base de retour pour rectifier FMax
 def AireSousCourbe(ptsArr):
 
     tmp = 0
     reversedArrY = ptsArr[1][::-1]
     for i in range(0, 100, 1):
         tmp += reversedArrY[i]
-    ymean = tmp/100
-    print(ymean)
+    ymean = tmp/100 #ymean est la moyenne en y de notre ligne de base de retour calculé sur 100 pts
+
     ia = 0
     ib = 0
     for i in range(1, ptsArr.shape[1] - 5):
         if ptsArr[1][i + 5] < ymean < ptsArr[1][i - 5]:
             ia = i
             break
-    for i in range(1, ptsArr.shape[1] - 5):
+    for i in range(ia, ptsArr.shape[1] - 5):
         if ptsArr[1][i + 5] > ymean > ptsArr[1][i - 5]:
             ib = i
             break
@@ -120,9 +122,8 @@ def AireSousCourbe(ptsArr):
     for i in range(ia, ib - 2, 2):
         x = ptsArr[0][i + 2] - ptsArr[0][i]
         aire += ptsArr[1][i] * x
-    print(aire)
-    print("oui")
-    return abs(aire)
+
+    return abs(aire), ymean
 
 
 def Derivee (x, y):
