@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 import math
 import pandas as pd
 import os.path
-from pip._vendor.distlib.compat import raw_input
-import Utils as ui
-import seaborn as sns
+from my_package import utils as ui
+
 
 ##### Lecture du fichier txt #####
 def returnDataFromFile (fichiers, increment):
@@ -62,7 +61,7 @@ def returnCorrectedCurve (ptsArray):
 
 
 ##### calcul variance et seuil pour trouver points de rupture #####
-def returnPtsRupture (correctedPtsArray):
+def returnPtsRupture (correctedPtsArray, isPlot):
 
     curveRetour = ui.returnCurveSepareted(correctedPtsArray)[1]
     N = 10
@@ -89,17 +88,17 @@ def returnPtsRupture (correctedPtsArray):
             FrX.append(varI[0][i])
     Fr = np.array([FrX, FrY])
 
-
-    plt.figure(figsize=(19.2, 10.8))
-    plt.plot(varI[0], varI[1], color="blue", label="Var(i)")
-    plt.plot(list(varI[0]), tabSeuil, color="orange", label="seuil")
-    plt.scatter(Fr[0], Fr[1], color="red", label="pics")
-    plt.ylabel("Var(i)")
-    plt.xlabel("i")
-    plt.title("----")
-    plt.legend()
-    plt.grid()
-    plt.show()
+    if isPlot == True:
+        plt.figure(figsize=(7.2, 4.8))
+        plt.plot(varI[0], varI[1], color="blue", label="Var(i)")
+        plt.plot(list(varI[0]), tabSeuil, color="orange", label="seuil")
+        plt.scatter(Fr[0], Fr[1], color="red", label="pics")
+        plt.ylabel("Var(i)")
+        plt.xlabel("i")
+        plt.title("----")
+        plt.legend()
+        plt.grid()
+        plt.show()
 
 
     ##### Cherche Force d'adhésion avec position #####

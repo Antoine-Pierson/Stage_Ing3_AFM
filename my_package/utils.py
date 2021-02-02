@@ -1,10 +1,8 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import math
 import glob
 import os.path
-from scipy import integrate as intg
 from pylab import *
+from pynput.keyboard import Key, KeyCode
 
 ##### Fonctions utiles #####
 
@@ -86,13 +84,13 @@ def Seuil (curveRetour, alpha, N):
     L = curveRetour.shape[1]
     tmp = 0
     for i in range(L-N-50, L-N, 1):
-        tmp += Var(list(curveRetour[0]), 0, N)[0][i]
-        #tmp += Var(list(curveRetour[1]), 0, N)[1][i]
+        #tmp += Var(list(curveRetour[0]), 0, N)[0][i]
+        tmp += Var(list(curveRetour[1]), 0, N)[1][i]
     aveVar = tmp/50
     diffVar = 0
     for j in range(L-N-50, L-N, 1):
-        diffVar += math.pow(Var(curveRetour[0], 0, N)[0][j] - aveVar, 2)
-        #diffVar += math.pow(Var(curveRetour[1], 0, N)[1][j] - aveVar, 2)
+        #diffVar += math.pow(Var(curveRetour[0], 0, N)[0][j] - aveVar, 2)
+        diffVar += math.pow(Var(curveRetour[1], 0, N)[1][j] - aveVar, 2)
     seuil = aveVar + alpha*math.sqrt(diffVar/50)
 
     return seuil
@@ -133,5 +131,29 @@ def Derivee (x, y):
     #plt.plot(x, y, label="f(x)")
     #plt.plot(x[:-1], yp, label="f'(x)")
     return yp
+
+
+##### Vérifie si on appuie sur la touche entrer du clavier pour terminer le program #####
+def breakEnd(key):
+    if key == Key.enter:
+        print("END OF PROGRAM")
+        return False
+    else:
+        print("\ntry again")
+
+
+def isBreak(key):
+    if key == Key.enter:
+        print("BREAK FINISH")
+        return False
+    else:
+        print("\ntry again")
+
+
+def isKey(key, u_key):
+    if key == KeyCode(char=chr(u_key)):
+        return False
+    else:
+        print("\ntry again")
 
 ########################
