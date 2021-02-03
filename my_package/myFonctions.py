@@ -122,7 +122,7 @@ def writeDataInCsvFile (outputPath, data1, data2, data3, dictData, nameOutput = 
     dataFrame.to_csv(os.path.join(outputPath, nameOutput + '.csv'), sep=';', index=False)
     return os.path.join(outputPath, nameOutput + '.csv')
 
-##### module de lecture des données + affichage ? #####
+##### module de lecture des données #####
 def readDataInCsvFile(files):
     df = pd.read_csv(files, sep=";")
     #print(df.head)

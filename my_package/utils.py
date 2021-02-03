@@ -150,6 +150,7 @@ def isBreak(key):
         print("\ntry again")
 
 
+##### Là je voulais faire un truc général, pas réussi... mais intéréssant à faire #####
 def isKey(key, u_key):
     if key == KeyCode(char=chr(u_key)):
         return False

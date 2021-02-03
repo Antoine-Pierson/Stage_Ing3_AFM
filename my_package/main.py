@@ -1,4 +1,3 @@
-from pip._vendor.distlib.compat import raw_input
 from my_package import modules as mod
 from my_package import utils as ui
 import keyboard
@@ -11,9 +10,11 @@ def run():
     while True:
         try:
             if keyboard.is_pressed('1'):
+                print("\nVous avez choisi le module de recherche des points de rupture par variance\n")
                 mod.moduleFrPts()
                 break
             elif keyboard.is_pressed('2'):
+                print("\nVous avez choisi le module de recherche de l'aire et de Fmax\n")
                 mod.moduleFmaxAire()
                 break
         except: break

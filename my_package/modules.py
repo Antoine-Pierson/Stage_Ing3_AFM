@@ -7,7 +7,7 @@ import keyboard
 
 
 def moduleFrPts():
-    typeOS = raw_input("\nEtes vous sous windows (w) ou mac (m)? (écrivez en minuscule)\n")
+    typeOS = raw_input("Etes vous sous windows (w) ou mac (m)? (écrivez en minuscule)\n")
     path = raw_input("Entrez le chemin du dossier où se trouve les données à traiter\n")
     isPlot = False
 
@@ -88,7 +88,7 @@ def moduleFrPts():
 
 
 def moduleFmaxAire():
-    typeOS = raw_input("\nEtes vous sous windows (w) ou mac (m)? (écrivez en minuscule)\n")
+    typeOS = raw_input("Etes vous sous windows (w) ou mac (m)? (écrivez en minuscule)\n")
     path = raw_input("Entrez le chemin du dossier où se trouve les données à traiter\n")
     fichiers, baseName = ui.listdirectory(path, typeOS, extension="txt")
 
