@@ -2,9 +2,16 @@ import math
 import glob
 import os.path
 from pylab import *
-from pynput.keyboard import Key, KeyCode
 
 ##### Fonctions utiles #####
+
+def isPathExist(path: str) -> bool:
+    if os.path.exists(path):
+        return True
+    else:
+        print("Le chemin ", path, " n'existe pas")
+        return False
+
 
 def listdirectory(path, typeOS, extension):
 
@@ -66,7 +73,7 @@ def returnCurveSepareted (ptsArray):
     return curveAller, curveRetour
 
 
-def Var (list, debut, N):
+def var (list, debut, N):
     var = []
     p = []
     for k in range(debut, len(list) - N, 1):
@@ -80,17 +87,17 @@ def Var (list, debut, N):
     return varI
 
 
-def Seuil (curveRetour, alpha, N):
+def seuil (curveRetour, alpha, N):
     L = curveRetour.shape[1]
     tmp = 0
     for i in range(L-N-50, L-N, 1):
         #tmp += Var(list(curveRetour[0]), 0, N)[0][i]
-        tmp += Var(list(curveRetour[1]), 0, N)[1][i]
+        tmp += var(list(curveRetour[1]), 0, N)[1][i]
     aveVar = tmp/50
     diffVar = 0
     for j in range(L-N-50, L-N, 1):
         #diffVar += math.pow(Var(curveRetour[0], 0, N)[0][j] - aveVar, 2)
-        diffVar += math.pow(Var(curveRetour[1], 0, N)[1][j] - aveVar, 2)
+        diffVar += math.pow(var(curveRetour[1], 0, N)[1][j] - aveVar, 2)
     seuil = aveVar + alpha*math.sqrt(diffVar/50)
 
     return seuil
@@ -98,7 +105,7 @@ def Seuil (curveRetour, alpha, N):
 
 ##### Retourne la valeur absolue de L'aire sous la courbe de retour
 ##### et la valeur moyenne en y de la ligne de base de retour pour rectifier FMax
-def AireSousCourbe(ptsArr):
+def aireSousCourbe(ptsArr):
 
     tmp = 0
     reversedArrY = ptsArr[1][::-1]
@@ -112,49 +119,27 @@ def AireSousCourbe(ptsArr):
         if ptsArr[1][i + 5] < ymean < ptsArr[1][i - 5]:
             ia = i
             break
+
     for i in range(ia, ptsArr.shape[1] - 5):
         if ptsArr[1][i + 5] > ymean > ptsArr[1][i - 5]:
             ib = i
             break
+
     aire = 0
-    for i in range(ia, ib - 2, 2):
+    for i in range(ia, ib - 2, 2): # stop=ib - 2
         x = ptsArr[0][i + 2] - ptsArr[0][i]
         aire += ptsArr[1][i] * x
 
     return abs(aire), ymean
 
 
-def Derivee (x, y):
+##### retourne une approximation de dérivées à chaque pts #####
+def derivee (x, y):
+    yp = np.diff(y)/np.diff(x)
 
-    yp = (y[1:] - y[:-1]) / (x[1:] - x[:-1])
+    #yp = (y[1:] - y[:-1]) / (x[1:] - x[:-1])
 
-    #plt.plot(x, y, label="f(x)")
-    #plt.plot(x[:-1], yp, label="f'(x)")
     return yp
 
-
-##### Vérifie si on appuie sur la touche entrer du clavier pour terminer le program #####
-def breakEnd(key):
-    if key == Key.enter:
-        print("END OF PROGRAM")
-        return False
-    else:
-        print("\ntry again")
-
-
-def isBreak(key):
-    if key == Key.enter:
-        print("BREAK FINISH")
-        return False
-    else:
-        print("\ntry again")
-
-
-##### Là je voulais faire un truc général, pas réussi... mais intéréssant à faire #####
-def isKey(key, u_key):
-    if key == KeyCode(char=chr(u_key)):
-        return False
-    else:
-        print("\ntry again")
 
 ########################

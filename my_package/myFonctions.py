@@ -61,18 +61,21 @@ def returnCorrectedCurve (ptsArray):
 
 
 ##### calcul variance et seuil pour trouver points de rupture #####
-def returnPtsRupture (correctedPtsArray, isPlot):
+def returnPtsRupture (correctedPtsArray, isPlot, cstAlpha):
 
     curveRetour = ui.returnCurveSepareted(correctedPtsArray)[1]
     N = 10
     ##### Variance
 
-    varI = ui.Var(list(curveRetour[1]), 0, N)
+    varI = ui.var(list(curveRetour[1]), 0, N)
 
     ##### Seuil
-    alpha = 20
-    #alpha = float(input("Choose the alpha treshold\n"))
-    seuil = ui.Seuil(curveRetour, alpha, N)
+    alpha = 0
+    if isPlot == True:
+        alpha = float(input("Choose the alpha treshold\n"))
+    if isPlot == False:
+        alpha = cstAlpha
+    seuil = ui.seuil(curveRetour, alpha, N)
     tabSeuil = []
     for i in range(varI.shape[1]):
         tabSeuil.append(seuil)
@@ -105,11 +108,12 @@ def returnPtsRupture (correctedPtsArray, isPlot):
 
     posFrForceCurveX = []
     posFrForceCurveY = []
+    # k = N/2 # pour recadrer les pts...mais là ça casse mon programme...
     for i in range(curveRetour.shape[1]):
         for j in range(Fr.shape[1]):
             if i == Fr[0][j]:
-                posFrForceCurveX.append(curveRetour[0][i])
-                posFrForceCurveY.append(curveRetour[1][i])
+                posFrForceCurveX.append(curveRetour[0][i]) # i+k
+                posFrForceCurveY.append(curveRetour[1][i])  # i+k
     posFrForceCurve = np.array([posFrForceCurveX, posFrForceCurveY])
 
     return posFrForceCurve

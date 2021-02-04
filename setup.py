@@ -1,12 +1,8 @@
-from setuptools import setup
+from cx_Freeze import setup, Executable
 
 setup(
-    name='Stage_Ing3_AFM',
-    version='',
-    packages=[''],
-    url='',
-    license='',
+    name='AFM',
+    version='0.1',
     author='Pierson Antoine',
-    author_email='',
-    description='',
+    executables=[Executable('__main__.py')]
 )
