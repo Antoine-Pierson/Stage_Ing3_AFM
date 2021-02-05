@@ -24,11 +24,12 @@ def moduleFrPts():
             if u_input == 'o' or u_input == 'oui':
                 isPlot = True
                 print("Les graphiques seront affichés")
+                cstAlpha = int(input("Veuillez choisir une valeur de alpha pour le seuil: "))
                 break
             elif u_input == 'n' or u_input == 'non':
                 isPlot = False
                 print("Les graphiques ne seront pas affichés")
-                cstAlpha = int(input("Veuillez donc pas conséquent choisir une valeur de alpha pour le seuil: "))
+                cstAlpha = int(input("Veuillez choisir une valeur de alpha pour le seuil: "))
                 break
         except ValueError as err:
             print(err)
@@ -38,6 +39,7 @@ def moduleFrPts():
 
     FrX = []
     FrY = []
+    listBaseName = []
     increment = 0
     while increment < len(fichiers):
         print("Traitement en cours ! Fichier ", increment+1, "/", len(fichiers))
@@ -75,6 +77,9 @@ def moduleFrPts():
 
         FrX.extend(posFrForceCurve[0])
         FrY.extend(posFrForceCurve[1])
+        for i in range(posFrForceCurve.shape[1]):
+            listBaseName.append(baseName[increment])
+
         if isPlot == True:
             plt.figure(figsize=(7.2, 4.8))
             plt.plot(correctedPtsArray[0], correctedPtsArray[1], color="blue", label="Force Curve")
@@ -90,7 +95,7 @@ def moduleFrPts():
 
     ##### module écriture données au format csv #####
     dictData = ['NameFiles', 'Z_Height', 'Force']
-    outputCsvPath = mf.writeDataInCsvFile(path, baseName, FrX, FrY, dictData)
+    outputCsvPath = mf.writeDataInCsvFile(path, listBaseName, FrX, FrY, dictData)
     print("Vos données sont enregistrées à l'adresse: " + outputCsvPath)
 
 
@@ -228,7 +233,5 @@ def moduleFmaxAire():
 
 def moduleStat(outputPath):
 
-    datas = mf.readDataInCsvFile(outputPath)
+    datasframes = mf.readDataInCsvFile(outputPath)
     print("A venir prochainement !")
-    #plt.plot(datas["FMax"], datas.index)
-    #plt.show()

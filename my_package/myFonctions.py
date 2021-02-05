@@ -70,19 +70,13 @@ def returnPtsRupture (correctedPtsArray, isPlot, cstAlpha):
     varI = ui.var(list(curveRetour[1]), 0, N)
 
     ##### Seuil
-    alpha = 0
-    if isPlot == True:
-        alpha = float(input("Choose the alpha treshold\n"))
-    if isPlot == False:
-        alpha = cstAlpha
-    seuil = ui.seuil(curveRetour, alpha, N)
+    seuil = ui.seuil(curveRetour, cstAlpha, N)
     tabSeuil = []
     for i in range(varI.shape[1]):
         tabSeuil.append(seuil)
 
     ##### Pics de Rupture et conditions
 
-    Fi = curveRetour[1][1]
     FrX = []
     FrY = []
     for i in range(1, varI.shape[1] - 1, 1):
@@ -98,7 +92,7 @@ def returnPtsRupture (correctedPtsArray, isPlot, cstAlpha):
         plt.scatter(Fr[0], Fr[1], color="red", label="pics")
         plt.ylabel("Var(i)")
         plt.xlabel("i")
-        plt.title("----")
+        plt.title("Variance en fonction des pts i")
         plt.legend()
         plt.grid()
         plt.show()
@@ -134,6 +128,5 @@ def readDataInCsvFile(files):
     #print(df.columns)
     #print("FMax" in list(map(lambda x: x, df)))
     #print(df.columns.tolist())
-
-    return df[["FMax", "Aire"]]
+    return df
 
