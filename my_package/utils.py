@@ -95,9 +95,10 @@ def aireSousCourbe(ptsArr):
 
     tmp = 0
     reversedArrY = ptsArr[1][::-1]
-    for i in range(0, 100, 1):
+    for i in range(0, int(ptsArr.shape[1]/80), 1):
         tmp += reversedArrY[i]
-    ymean = tmp/100 #ymean est la moyenne en y de notre ligne de base de retour calculé sur 100 pts
+    ymean = tmp/(ptsArr.shape[1]/80) # ymean est la moyenne de la Somme des y de notre ligne de base de retour
+                                     # divisée par 1/80 nb de lignes de données que contient le fichier/la courbe
 
     ia = 0
     ib = 0
