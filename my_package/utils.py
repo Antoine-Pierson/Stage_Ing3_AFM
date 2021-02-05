@@ -13,25 +13,11 @@ def isPathExist(path: str) -> bool:
         return False
 
 
-def listdirectory(path, typeOS, extension):
+def listdirectory(path, extension):
 
-    txt = ''
-    isEnd = False
-    while not isEnd:
-        if typeOS == "windows" or "w":
-            path = path.replace('\'', '\\')
-            txt = '\\*.' + extension
-            isEnd = True
-        elif typeOS == "mac" or "m":
-            path = path.replace('/', '//')
-            txt = '//*.' + extension
-            isEnd = True
-        else:
-            print("Veuillez réessayer\n")
-            isEnd = False
-
+    txt = '*.' + extension
     fichier=[]
-    l = glob.glob(path+txt)
+    l = glob.glob(os.path.join(path, txt))
     for i in l:
         if os.path.isdir(i): fichier.extend(listdirectory(i))
         else: fichier.append(i)

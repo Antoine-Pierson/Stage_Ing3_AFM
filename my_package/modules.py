@@ -6,16 +6,6 @@ from my_package import utils as ui
 
 
 def moduleFrPts():
-    typeOS = ""
-    while True:
-        try:
-            typeOS = raw_input("Etes vous sous windows (w) ou mac (m)? (écrivez en minuscule)\n")
-            if typeOS == 'w' or typeOS == 'm' or typeOS == 'windows' or typeOS == 'mac':
-                break
-        except ValueError as err:
-            print(err)
-            break
-
     path = ""
     while True:
         try:
@@ -44,7 +34,7 @@ def moduleFrPts():
             print(err)
             break
 
-    fichiers, baseName = ui.listdirectory(path, typeOS, extension="txt")
+    fichiers, baseName = ui.listdirectory(path, extension="txt")
 
     FrX = []
     FrY = []
@@ -105,16 +95,6 @@ def moduleFrPts():
 
 
 def moduleFmaxAire():
-    typeOS = ""
-    while True:
-        try:
-            typeOS = raw_input("Etes vous sous windows (w) ou mac (m)? (écrivez en minuscule)\n")
-            if typeOS == 'w' or typeOS == 'm' or typeOS == 'windows' or typeOS == 'mac':
-                break
-        except ValueError as err:
-            print(err)
-            break
-
     path = ""
     while True:
         try:
@@ -142,7 +122,7 @@ def moduleFmaxAire():
             print(err)
             break
 
-    fichiers, baseName = ui.listdirectory(path, typeOS, extension="txt")
+    fichiers, baseName = ui.listdirectory(path, extension="txt")
 
     FMax = []
     aire = []
@@ -252,5 +232,3 @@ def moduleStat(outputPath):
     print("A venir prochainement !")
     #plt.plot(datas["FMax"], datas.index)
     #plt.show()
-
-    return
